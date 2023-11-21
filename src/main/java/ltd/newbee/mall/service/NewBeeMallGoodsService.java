@@ -9,13 +9,16 @@
 package ltd.newbee.mall.service;
 
 import ltd.newbee.mall.entity.NewBeeMallGoods;
+import ltd.newbee.mall.entity.Question;
 import ltd.newbee.mall.util.PageQueryUtil;
 import ltd.newbee.mall.util.PageResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface NewBeeMallGoodsService {
-    /**
+public interface NewBeeMallGoodsService{
+
+	/**
      * 后台分页
      *
      * @param pageUtil
@@ -58,7 +61,7 @@ public interface NewBeeMallGoodsService {
     /**
      * 批量修改销售状态(上架下架)
      *
-     * @param ids
+     * @param aids
      * @return
      */
     Boolean batchUpdateSellStatus(Long[] ids,int sellStatus);
@@ -70,4 +73,15 @@ public interface NewBeeMallGoodsService {
      * @return
      */
     PageResult searchNewBeeMallGoods(PageQueryUtil pageUtil);
+    
+    /**
+     * 问题序号搜索
+     *
+     * @param questionId
+     * @return
+     */
+	List<Long> getQuestionById(List<Long> questionId);
+
+
+
 }

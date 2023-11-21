@@ -388,4 +388,17 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where goods_id = #{goodsId,jdbcType=BIGINT}
   </update>
+   
+   <select id="getQuestionById" parameterType="long" resultType="ltd.newbee.mall.entity.Question">
+	 SELECT questions.question_id,answers.answer_id,answers.answer_context
+ 	 FROM questions
+ 	 JOIN answers ON questions.question_id = answers.question_id
+ 	 where questions.question_id IN
+ 	 <foreach 
+ 	 item="questionId" collection="questionId" open="(" separator="," close=")">
+ 	 #{questionId,jdbcType=BIGINT}
+ 	 </foreach>
+   </select>
+   
+  
 </mapper>

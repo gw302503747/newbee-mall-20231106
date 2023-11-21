@@ -9,13 +9,15 @@
 package ltd.newbee.mall.dao;
 
 import ltd.newbee.mall.entity.NewBeeMallGoods;
+import ltd.newbee.mall.entity.Question;
 import ltd.newbee.mall.entity.StockNumDTO;
 import ltd.newbee.mall.util.PageQueryUtil;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface NewBeeMallGoodsMapper {
+public interface NewBeeMallGoodsMapper<QuestionId> {
     int deleteByPrimaryKey(Long goodsId);
 
     int insert(NewBeeMallGoods record);
@@ -49,5 +51,7 @@ public interface NewBeeMallGoodsMapper {
     int recoverStockNum(@Param("stockNumDTOS") List<StockNumDTO> stockNumDTOS);
 
     int batchUpdateSellStatus(@Param("orderIds")Long[] orderIds,@Param("sellStatus") int sellStatus);
-
+    
+    List<Long> getQuestionById(List<Long> questionId);
+ 
 }

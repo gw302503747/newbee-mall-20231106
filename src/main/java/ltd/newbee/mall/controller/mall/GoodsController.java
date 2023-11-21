@@ -8,25 +8,38 @@
  */
 package ltd.newbee.mall.controller.mall;
 
+
 import ltd.newbee.mall.common.Constants;
 import ltd.newbee.mall.common.NewBeeMallException;
 import ltd.newbee.mall.common.ServiceResultEnum;
 import ltd.newbee.mall.controller.vo.NewBeeMallGoodsDetailVO;
 import ltd.newbee.mall.controller.vo.SearchPageCategoryVO;
 import ltd.newbee.mall.entity.NewBeeMallGoods;
+import ltd.newbee.mall.entity.Question;
 import ltd.newbee.mall.service.NewBeeMallCategoryService;
 import ltd.newbee.mall.service.NewBeeMallGoodsService;
 import ltd.newbee.mall.util.BeanUtil;
 import ltd.newbee.mall.util.PageQueryUtil;
+import ltd.newbee.mall.util.Result;
+import ltd.newbee.mall.util.ResultGenerator;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import java.awt.PageAttributes.MediaType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -86,5 +99,20 @@ public class GoodsController {
         request.setAttribute("goodsDetail", goodsDetailVO);
         return "mall/detail";
     }
+  /*  
+    @RequestMapping(value = "/questions", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getQuestionAndAnswer(@RequestParam long questionId) {
+    	List<Question> list = newBeeMallGoodsService.getQuestionAndAnswer(questionId);
+    	return ResultGenerator.genSuccessResult(list); 
+    		    }
+    */
 
+    @RequestMapping(value = "/questions", method = RequestMethod.GET)
+    @ResponseBody
+    public Result questions(@RequestBody List<Long> questionId) {
+    	List<Long> list = newBeeMallGoodsService.getQuestionById(questionId);
+    	return ResultGenerator.genSuccessResult(list); 
+    		    }
+    
 }
