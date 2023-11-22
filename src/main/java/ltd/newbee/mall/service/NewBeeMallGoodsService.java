@@ -82,6 +82,8 @@ public interface NewBeeMallGoodsService{
      */
 	List<Long> getQuestionById(List<Long> questionId);
 
+	int deleteQuestionById(List<Long> questionId);
+
 
 
 }

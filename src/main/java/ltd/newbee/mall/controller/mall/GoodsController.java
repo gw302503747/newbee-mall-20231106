@@ -115,4 +115,11 @@ public class GoodsController {
     	return ResultGenerator.genSuccessResult(list); 
     		    }
     
+    @RequestMapping(value = "/delete/questions", method = RequestMethod.POST)
+    @ResponseBody
+    public Result delete(@RequestBody List<Long> questionId) {
+            return ResultGenerator.genSuccessResult(
+            		newBeeMallGoodsService.deleteQuestionById(questionId));
+    }
+    
 }

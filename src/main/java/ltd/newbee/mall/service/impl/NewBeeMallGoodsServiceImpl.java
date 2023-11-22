@@ -142,4 +142,10 @@ public class NewBeeMallGoodsServiceImpl implements NewBeeMallGoodsService {
 		
 		return goodsMapper.getQuestionById(questionId);
 	}
+    
+    @Override
+    public int deleteQuestionById(List<Long> questionId) {
+        return goodsMapper.deleteQuestionById(questionId);
+    }
+
 }

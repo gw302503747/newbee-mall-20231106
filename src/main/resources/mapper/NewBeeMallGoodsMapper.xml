@@ -400,5 +400,16 @@
  	 </foreach>
    </select>
    
+   <delete id="deleteQuestionById" parameterType="long">
+    DELETE answers,questions
+    FROM answers
+    LEFT JOIN questions ON questions.question_id = answers.question_id
+    where answers.question_id IN
+ 	 <foreach 
+ 	 item="questionId" collection="questionId" open="(" separator="," close=")">
+ 	 #{questionId,jdbcType=BIGINT}
+ 	 </foreach>
+  </delete>
+   
   
 </mapper>
