@@ -21,6 +21,7 @@
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="ltd.newbee.mall.entity.NewBeeMallGoods">
         <result column="goods_detail_content" jdbcType="LONGVARCHAR" property="goodsDetailContent"/>
     </resultMap>
+    
     <sql id="Base_Column_List">
     goods_id, goods_name, goods_intro,goods_category_id, goods_cover_img, goods_carousel, original_price,
     selling_price, stock_num, tag, goods_sell_status, create_user, create_time, update_user, 
@@ -28,6 +29,9 @@
   </sql>
     <sql id="Blob_Column_List">
     goods_detail_content
+  </sql>
+   <sql id="Question_Column_List">
+    question_id, answer_id, answer_context
   </sql>
 
     <insert id="batchInsert">
@@ -388,28 +392,5 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where goods_id = #{goodsId,jdbcType=BIGINT}
   </update>
-   
-   <select id="getQuestionById" parameterType="long" resultType="ltd.newbee.mall.entity.Question">
-	 SELECT questions.question_id,answers.answer_id,answers.answer_context
- 	 FROM questions
- 	 JOIN answers ON questions.question_id = answers.question_id
- 	 where questions.question_id IN
- 	 <foreach 
- 	 item="questionId" collection="questionId" open="(" separator="," close=")">
- 	 #{questionId,jdbcType=BIGINT}
- 	 </foreach>
-   </select>
-   
-   <delete id="deleteQuestionById" parameterType="long">
-    DELETE answers,questions
-    FROM answers
-    LEFT JOIN questions ON questions.question_id = answers.question_id
-    where answers.question_id IN
- 	 <foreach 
- 	 item="questionId" collection="questionId" open="(" separator="," close=")">
- 	 #{questionId,jdbcType=BIGINT}
- 	 </foreach>
-  </delete>
-   
   
 </mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.NewBeeMallQuestionMapper">
+    <resultMap id="QuestionMap" type="ltd.newbee.mall.entity.Question">
+        <result column="question_id" jdbcType="BIGINT" property="questionId"/>
+        <result column="answer_id" jdbcType="BIGINT" property="answerId"/>
+        <result column="answer_context" jdbcType="VARCHAR" property="answerContext"/>
+    </resultMap>
+    <sql id="Question_Column_List">
+    question_id, answer_id, answer_context
+  </sql>
+  
+   <select id="getQuestionById" parameterType="long" resultType="ltd.newbee.mall.entity.Question">
+	 SELECT questions.question_id,answers.answer_id,answers.answer_context
+ 	 FROM questions
+ 	 JOIN answers ON questions.question_id = answers.question_id
+ 	 where questions.question_id IN
+ 	 <foreach 
+ 	 item="questionId" collection="questionId" open="(" separator="," close=")">
+ 	 #{questionId,jdbcType=BIGINT}
+ 	 </foreach>
+   </select>
+   
+   <delete id="deleteQuestionById" parameterType="long" >
+    DELETE answers,questions
+    FROM answers
+    LEFT JOIN questions ON questions.question_id = answers.question_id
+    where answers.question_id IN
+ 	 <foreach 
+ 	 item="questionId" collection="questionId" open="(" separator="," close=")">
+ 	 #{questionId,jdbcType=BIGINT}
+ 	 </foreach>
+  </delete>
+  
+  <update id="updateQuestionById" parameterType="ltd.newbee.mall.entity.Question">
+        update answers
+        <set>
+            <if test="answerId != null">
+                answer_id = #{answerId,jdbcType=BIGINT},
+            </if>
+            <if test="answerContext != null">
+                answer_context = #{answerContext,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where answers.question_id =#{questionId,jdbcType=BIGINT}
+ 
+    </update>
+    
+</mapper>

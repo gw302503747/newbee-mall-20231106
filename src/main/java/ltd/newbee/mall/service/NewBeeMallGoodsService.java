@@ -15,6 +15,7 @@ import ltd.newbee.mall.util.PageResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface NewBeeMallGoodsService{
 
@@ -73,17 +74,6 @@ public interface NewBeeMallGoodsService{
      * @return
      */
     PageResult searchNewBeeMallGoods(PageQueryUtil pageUtil);
-    
-    /**
-     * 问题序号搜索
-     *
-     * @param questionId
-     * @return
-     */
-	List<Long> getQuestionById(List<Long> questionId);
-
-	int deleteQuestionById(List<Long> questionId);
-
-
+ 
 
 }

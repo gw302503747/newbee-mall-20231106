@@ -10,6 +10,7 @@ package ltd.newbee.mall.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -135,17 +136,6 @@ public class NewBeeMallGoodsServiceImpl implements NewBeeMallGoodsService {
         }
         PageResult pageResult = new PageResult(newBeeMallSearchGoodsVOS, total, pageUtil.getLimit(), pageUtil.getPage());
         return pageResult;
-    }
-    
-    @Override
-	public List<Long> getQuestionById(List<Long> questionId) {
-		
-		return goodsMapper.getQuestionById(questionId);
-	}
-    
-    @Override
-    public int deleteQuestionById(List<Long> questionId) {
-        return goodsMapper.deleteQuestionById(questionId);
     }
 
 }

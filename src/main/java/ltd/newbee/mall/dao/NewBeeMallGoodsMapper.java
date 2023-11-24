@@ -16,6 +16,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface NewBeeMallGoodsMapper<QuestionId> {
     int deleteByPrimaryKey(Long goodsId);
@@ -51,9 +52,5 @@ public interface NewBeeMallGoodsMapper<QuestionId> {
     int recoverStockNum(@Param("stockNumDTOS") List<StockNumDTO> stockNumDTOS);
 
     int batchUpdateSellStatus(@Param("orderIds")Long[] orderIds,@Param("sellStatus") int sellStatus);
-    
-    List<Long> getQuestionById(List<Long> questionId);
-    
-    int deleteQuestionById(List<Long> questionId);
  
 }

@@ -9,6 +9,23 @@
 package ltd.newbee.mall.controller.mall;
 
 
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import ltd.newbee.mall.common.Constants;
 import ltd.newbee.mall.common.NewBeeMallException;
 import ltd.newbee.mall.common.ServiceResultEnum;
@@ -22,25 +39,6 @@ import ltd.newbee.mall.util.BeanUtil;
 import ltd.newbee.mall.util.PageQueryUtil;
 import ltd.newbee.mall.util.Result;
 import ltd.newbee.mall.util.ResultGenerator;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import java.awt.PageAttributes.MediaType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 public class GoodsController {
@@ -85,7 +83,7 @@ public class GoodsController {
     }
 
     @GetMapping("/goods/detail/{goodsId}")
-    public String detailPage(@PathVariable("goodsId") Long goodsId, HttpServletRequest request) {
+	public String detailPage(@PathVariable("goodsId") Long goodsId, HttpServletRequest request) {
         if (goodsId < 1) {
             NewBeeMallException.fail("参数异常");
         }
@@ -99,27 +97,5 @@ public class GoodsController {
         request.setAttribute("goodsDetail", goodsDetailVO);
         return "mall/detail";
     }
-  /*  
-    @RequestMapping(value = "/questions", method = RequestMethod.GET)
-    @ResponseBody
-    public Result getQuestionAndAnswer(@RequestParam long questionId) {
-    	List<Question> list = newBeeMallGoodsService.getQuestionAndAnswer(questionId);
-    	return ResultGenerator.genSuccessResult(list); 
-    		    }
-    */
-
-    @RequestMapping(value = "/questions", method = RequestMethod.GET)
-    @ResponseBody
-    public Result questions(@RequestBody List<Long> questionId) {
-    	List<Long> list = newBeeMallGoodsService.getQuestionById(questionId);
-    	return ResultGenerator.genSuccessResult(list); 
-    		    }
-    
-    @RequestMapping(value = "/delete/questions", method = RequestMethod.POST)
-    @ResponseBody
-    public Result delete(@RequestBody List<Long> questionId) {
-            return ResultGenerator.genSuccessResult(
-            		newBeeMallGoodsService.deleteQuestionById(questionId));
-    }
-    
 }
+	
