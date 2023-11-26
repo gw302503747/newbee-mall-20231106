@@ -43,7 +43,19 @@
             </if>
         </set>
         where answers.question_id =#{questionId,jdbcType=BIGINT}
- 
     </update>
+    
+      <select id="findQuestionList" parameterType="Map" resultMap="QuestionMap">
+        select
+        <include refid="Question_Column_List"/>
+        from answers
+        order by question_id asc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getTotalQuestions" parameterType="Map" resultType="int">
+        select count(*) from answers
+    </select>
     
 </mapper>

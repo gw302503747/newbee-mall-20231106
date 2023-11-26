@@ -9,6 +9,8 @@
 package ltd.newbee.mall.dao;
 
 import ltd.newbee.mall.entity.Question;
+import ltd.newbee.mall.util.PageQueryUtil;
+
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
@@ -20,5 +22,9 @@ public interface NewBeeMallQuestionMapper {
     int deleteQuestionById(List<Long> questionId);
     
     int updateQuestionById(Map<String, Object> questionId);
-    
+
+	int getTotalQuestions(PageQueryUtil pageUtil);
+
+	List<String> findQuestionList(PageQueryUtil pageUtil);
+
 }

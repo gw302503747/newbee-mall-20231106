@@ -35,6 +35,7 @@ import ltd.newbee.mall.controller.vo.SearchPageCategoryVO;
 import ltd.newbee.mall.entity.NewBeeMallGoods;
 import ltd.newbee.mall.entity.Question;
 import ltd.newbee.mall.service.NewBeeMallQuestionService;
+import ltd.newbee.mall.util.PageQueryUtil;
 import ltd.newbee.mall.util.Result;
 import ltd.newbee.mall.util.ResultGenerator;
 
@@ -72,6 +73,17 @@ public class QuestionController {
     public Result update(@RequestBody Map<String, Object> questionId) {
              return ResultGenerator.genSuccessResult(newBeeMallQuestionService.updateQuestionById(questionId));
     }
+    
+    @RequestMapping(value = "/questions/list", method = RequestMethod.GET)
+    @ResponseBody
+    public Result list(@RequestParam Map<String, Object> params) {
+        if (ObjectUtils.isEmpty(params.get("page")) || ObjectUtils.isEmpty(params.get("limit"))) {
+            return ResultGenerator.genFailResult("参数异常！");
+        }
+        PageQueryUtil pageUtil = new PageQueryUtil(params);
+        return ResultGenerator.genSuccessResult(newBeeMallQuestionService.getQuestionPage(pageUtil));
+    }
+
     
 }
 	

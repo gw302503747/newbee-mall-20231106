@@ -54,5 +54,13 @@ public class NewBeeMallQuestionServiceImpl implements NewBeeMallQuestionService 
     public int updateQuestionById(Map<String, Object> questionId) {
         return questionMapper.updateQuestionById(questionId);
     }
+   
+    @Override
+    public PageResult getQuestionPage(PageQueryUtil pageUtil) {
+        List<String> question = questionMapper.findQuestionList(pageUtil);
+        int total = questionMapper.getTotalQuestions(pageUtil);
+        PageResult pageResult = new PageResult(question, total, pageUtil.getLimit(), pageUtil.getPage());
+        return pageResult;
+    }
 
 }

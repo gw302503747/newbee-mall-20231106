@@ -29,4 +29,6 @@ public interface NewBeeMallQuestionService {
 	int deleteQuestionById(List<Long> questionId);
 	
 	int updateQuestionById(Map<String, Object> questionId);
+	
+	PageResult getQuestionPage(PageQueryUtil pageUtil);
 }
