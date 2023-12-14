@@ -1,9 +1,11 @@
 package ltd.newbee.mall.util;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.context.annotation.Bean;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -90,4 +92,10 @@ public abstract class BeanUtil {
             return false;
         }
     }
+    
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+
 }

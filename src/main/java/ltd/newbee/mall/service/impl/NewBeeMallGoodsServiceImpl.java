@@ -11,23 +11,37 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import ltd.newbee.mall.common.Constants;
 import ltd.newbee.mall.common.NewBeeMallCategoryLevelEnum;
 import ltd.newbee.mall.common.NewBeeMallException;
 import ltd.newbee.mall.common.ServiceResultEnum;
+import ltd.newbee.mall.controller.vo.NewBeeMallIndexConfigGoodsVO;
 import ltd.newbee.mall.controller.vo.NewBeeMallSearchGoodsVO;
+import ltd.newbee.mall.controller.vo.NewBeeMallShoppingCartItemVO;
+import ltd.newbee.mall.controller.vo.NewBeeMallUserVO;
 import ltd.newbee.mall.dao.GoodsCategoryMapper;
 import ltd.newbee.mall.dao.NewBeeMallGoodsMapper;
 import ltd.newbee.mall.entity.GoodsCategory;
+import ltd.newbee.mall.entity.IndexConfig;
+import ltd.newbee.mall.entity.UserHistory;
 import ltd.newbee.mall.entity.NewBeeMallGoods;
+import ltd.newbee.mall.entity.NewBeeMallOrder;
+import ltd.newbee.mall.entity.NewBeeMallOrderItem;
+import ltd.newbee.mall.entity.NewBeeMallShoppingCartItem;
 import ltd.newbee.mall.entity.Question;
+import ltd.newbee.mall.entity.StockNumDTO;
 import ltd.newbee.mall.service.NewBeeMallGoodsService;
 import ltd.newbee.mall.util.BeanUtil;
 import ltd.newbee.mall.util.NewBeeMallUtils;
+import ltd.newbee.mall.util.NumberUtil;
 import ltd.newbee.mall.util.PageQueryUtil;
 import ltd.newbee.mall.util.PageResult;
 
@@ -137,5 +151,91 @@ public class NewBeeMallGoodsServiceImpl implements NewBeeMallGoodsService {
         PageResult pageResult = new PageResult(newBeeMallSearchGoodsVOS, total, pageUtil.getLimit(), pageUtil.getPage());
         return pageResult;
     }
+    
 
+    @Override
+    public String saveUserHistory(NewBeeMallUserVO user, Long goodsId) {
+    	UserHistory userHistory = new UserHistory();
+    	userHistory.setUserId(user.getUserId());
+        userHistory.setGoodsId(goodsId);
+        userHistory.setCheckTime(new Date());
+        goodsMapper.insertHistory(userHistory);
+        	return ServiceResultEnum.SUCCESS.getResult();
+    }
+    
+
+    @Override
+    public String updateUserHistory(NewBeeMallUserVO user, Long goodsId) {
+    	Long userId = user.getUserId();
+        UserHistory userHistory = goodsMapper.selectByUserAndGoodsId(userId,goodsId);
+        if (userHistory == null) {
+        	}
+        userHistory.setCheckTime(new Date());	
+    	return ServiceResultEnum.SUCCESS.getResult();
+	} 
+   
+    @Override
+    public UserHistory getUserHistoryById(Long userId,Long goodsId) {
+    	UserHistory userHistory = goodsMapper.selectByUserAndGoodsId(userId,goodsId);
+        if (userHistory == null) {
+        }
+        return userHistory;
+    }
+
+    @Override
+    public PageResult getHistoryPage(PageQueryUtil pageUtil) {
+        List<NewBeeMallGoods> goodsList = goodsMapper.findGoodsListByUserHistory(pageUtil);
+        int total = goodsMapper.getTotalHistory(pageUtil);
+        List<NewBeeMallSearchGoodsVO> newBeeMallSearchGoodsVOS = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(goodsList)) {
+            newBeeMallSearchGoodsVOS = BeanUtil.copyList(goodsList, NewBeeMallSearchGoodsVO.class);
+            for (NewBeeMallSearchGoodsVO newBeeMallSearchGoodsVO : newBeeMallSearchGoodsVOS) {
+                String goodsName = newBeeMallSearchGoodsVO.getGoodsName();
+                String goodsIntro = newBeeMallSearchGoodsVO.getGoodsIntro();
+                // 字符串过长导致文字超出的问题
+                if (goodsName.length() > 28) {
+                    goodsName = goodsName.substring(0, 28) + "...";
+                    newBeeMallSearchGoodsVO.setGoodsName(goodsName);
+                }
+                if (goodsIntro.length() > 30) {
+                    goodsIntro = goodsIntro.substring(0, 30) + "...";
+                    newBeeMallSearchGoodsVO.setGoodsIntro(goodsIntro);
+                }
+            }
+        }
+        PageResult pageResult = new PageResult(newBeeMallSearchGoodsVOS, total, pageUtil.getLimit(), pageUtil.getPage());
+        return pageResult;
+    }
+    
+    @Override
+    public List<NewBeeMallIndexConfigGoodsVO> getUserHistoryForMoreHistory(NewBeeMallUserVO user) {
+        
+    	List<NewBeeMallIndexConfigGoodsVO> newBeeMallIndexConfigGoodsVOS = new ArrayList<>();
+    	Long userId = user.getUserId();
+    	List<UserHistory> userHistory =  goodsMapper.findUserHistoryByUserId(userId);
+
+        if (!CollectionUtils.isEmpty(userHistory)) {
+            //取出所有的goodsId
+            List<Long> goodsIds = userHistory.stream().map(UserHistory::getGoodsId).collect(Collectors.toList());
+            List<NewBeeMallGoods> newBeeMallGoods = goodsMapper.selectByPrimaryKeys(goodsIds);
+            newBeeMallIndexConfigGoodsVOS = BeanUtil.copyList(newBeeMallGoods, NewBeeMallIndexConfigGoodsVO.class);
+            for (NewBeeMallIndexConfigGoodsVO newBeeMallIndexConfigGoodsVO : newBeeMallIndexConfigGoodsVOS) {
+                String goodsName = newBeeMallIndexConfigGoodsVO.getGoodsName();
+                String goodsIntro = newBeeMallIndexConfigGoodsVO.getGoodsIntro();
+                // 字符串过长导致文字超出的问题
+                if (goodsName.length() > 30) {
+                    goodsName = goodsName.substring(0, 30) + "...";
+                    newBeeMallIndexConfigGoodsVO.setGoodsName(goodsName);
+                }
+                if (goodsIntro.length() > 22) {
+                    goodsIntro = goodsIntro.substring(0, 22) + "...";
+                    newBeeMallIndexConfigGoodsVO.setGoodsIntro(goodsIntro);
+                }
+            }
+        }
+        return newBeeMallIndexConfigGoodsVOS;
+    }
+    
+
+    
 }

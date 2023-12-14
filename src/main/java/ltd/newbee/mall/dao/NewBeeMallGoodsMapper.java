@@ -8,9 +8,11 @@
  */
 package ltd.newbee.mall.dao;
 
+import ltd.newbee.mall.entity.GoodsCategory;
 import ltd.newbee.mall.entity.NewBeeMallGoods;
 import ltd.newbee.mall.entity.Question;
 import ltd.newbee.mall.entity.StockNumDTO;
+import ltd.newbee.mall.entity.UserHistory;
 import ltd.newbee.mall.util.PageQueryUtil;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public interface NewBeeMallGoodsMapper<QuestionId> {
+public interface NewBeeMallGoodsMapper{
     int deleteByPrimaryKey(Long goodsId);
 
     int insert(NewBeeMallGoods record);
@@ -38,7 +40,7 @@ public interface NewBeeMallGoodsMapper<QuestionId> {
     List<NewBeeMallGoods> findNewBeeMallGoodsList(PageQueryUtil pageUtil);
 
     int getTotalNewBeeMallGoods(PageQueryUtil pageUtil);
-
+    
     List<NewBeeMallGoods> selectByPrimaryKeys(List<Long> goodsIds);
 
     List<NewBeeMallGoods> findNewBeeMallGoodsListBySearch(PageQueryUtil pageUtil);
@@ -52,5 +54,16 @@ public interface NewBeeMallGoodsMapper<QuestionId> {
     int recoverStockNum(@Param("stockNumDTOS") List<StockNumDTO> stockNumDTOS);
 
     int batchUpdateSellStatus(@Param("orderIds")Long[] orderIds,@Param("sellStatus") int sellStatus);
+    
+    int insertHistory (UserHistory record);
+    int updateHistory(UserHistory record);
+    
+    UserHistory selectByUserAndGoodsId(Long userId,Long goodsId);
+    
+    List<UserHistory> findUserHistoryByUserId(Long userId);
+    
+    List<NewBeeMallGoods> findGoodsListByUserHistory(PageQueryUtil pageUtil);
+
+	int getTotalHistory(PageQueryUtil pageUtil);
  
 }

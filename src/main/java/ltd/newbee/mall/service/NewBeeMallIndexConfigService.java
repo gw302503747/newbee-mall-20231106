@@ -9,11 +9,14 @@
 package ltd.newbee.mall.service;
 
 import ltd.newbee.mall.controller.vo.NewBeeMallIndexConfigGoodsVO;
+import ltd.newbee.mall.controller.vo.NewBeeMallUserVO;
 import ltd.newbee.mall.entity.IndexConfig;
 import ltd.newbee.mall.util.PageQueryUtil;
 import ltd.newbee.mall.util.PageResult;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 public interface NewBeeMallIndexConfigService {
     /**
@@ -39,4 +42,7 @@ public interface NewBeeMallIndexConfigService {
     List<NewBeeMallIndexConfigGoodsVO> getConfigGoodsesForIndex(int configType, int number);
 
     Boolean deleteBatch(Long[] ids);
+    
+    List<NewBeeMallIndexConfigGoodsVO> getUserHistoryForIndex(NewBeeMallUserVO user,int number);
+
 }

@@ -224,5 +224,15 @@ public class NewBeeMallGoodsController {
             return ResultGenerator.genFailResult("修改失败");
         }
     }
+    
+    @RequestMapping(value = "/history/list", method = RequestMethod.GET)
+    @ResponseBody
+    public Result historyList(@RequestParam Map<String, Object> params) {
+        if (ObjectUtils.isEmpty(params.get("page")) || ObjectUtils.isEmpty(params.get("limit"))) {
+            return ResultGenerator.genFailResult("参数异常！");
+        }
+        PageQueryUtil pageUtil = new PageQueryUtil(params);
+        return ResultGenerator.genSuccessResult(newBeeMallGoodsService.getHistoryPage(pageUtil));
+    }
 
 }

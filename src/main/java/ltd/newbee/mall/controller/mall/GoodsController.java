@@ -14,8 +14,10 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +32,13 @@ import ltd.newbee.mall.common.Constants;
 import ltd.newbee.mall.common.NewBeeMallException;
 import ltd.newbee.mall.common.ServiceResultEnum;
 import ltd.newbee.mall.controller.vo.NewBeeMallGoodsDetailVO;
+import ltd.newbee.mall.controller.vo.NewBeeMallIndexConfigGoodsVO;
+import ltd.newbee.mall.controller.vo.NewBeeMallShoppingCartItemVO;
+import ltd.newbee.mall.controller.vo.NewBeeMallUserVO;
 import ltd.newbee.mall.controller.vo.SearchPageCategoryVO;
 import ltd.newbee.mall.entity.NewBeeMallGoods;
 import ltd.newbee.mall.entity.Question;
+import ltd.newbee.mall.entity.UserHistory;
 import ltd.newbee.mall.service.NewBeeMallCategoryService;
 import ltd.newbee.mall.service.NewBeeMallGoodsService;
 import ltd.newbee.mall.util.BeanUtil;
@@ -83,7 +89,7 @@ public class GoodsController {
     }
 
     @GetMapping("/goods/detail/{goodsId}")
-	public String detailPage(@PathVariable("goodsId") Long goodsId, HttpServletRequest request) {
+	public String detailPage(@PathVariable("goodsId") Long goodsId, HttpServletRequest request,HttpSession httpSession) {
         if (goodsId < 1) {
             NewBeeMallException.fail("参数异常");
         }
@@ -91,11 +97,37 @@ public class GoodsController {
         if (Constants.SELL_STATUS_UP != goods.getGoodsSellStatus()) {
             NewBeeMallException.fail(ServiceResultEnum.GOODS_PUT_DOWN.getResult());
         }
+        
         NewBeeMallGoodsDetailVO goodsDetailVO = new NewBeeMallGoodsDetailVO();
         BeanUtil.copyProperties(goods, goodsDetailVO);
         goodsDetailVO.setGoodsCarouselList(goods.getGoodsCarousel().split(","));
         request.setAttribute("goodsDetail", goodsDetailVO);
+        
+        NewBeeMallUserVO user = (NewBeeMallUserVO) httpSession.getAttribute(Constants.MALL_USER_SESSION_KEY);
+        UserHistory userhistory = newBeeMallGoodsService.getUserHistoryById(user.getUserId(), goodsId);
+        
+        if (user.getUserId()!=null && userhistory == null) {
+        	String saveUserHistoryResult = newBeeMallGoodsService.saveUserHistory(user, goodsId);	
+        }
+        if (user.getUserId()!=null && userhistory!= null) {
+        	String updateUserHistoryResult = newBeeMallGoodsService.updateUserHistory(user, goodsId);
+        }
         return "mall/detail";
     }
+
+    @GetMapping({"/history","/history.html"})
+    public String historyPage(@RequestParam Map<String, Object> params, HttpServletRequest request) {
+    	if (ObjectUtils.isEmpty(params.get("page"))) {
+            params.put("page", 1);
+        }
+        params.put("limit", Constants.USER_HISTORY_PAGE_LIMIT);
+        //搜索上架状态下的商品
+        params.put("goodsSellStatus", Constants.SELL_STATUS_UP);
+        //封装商品数据
+        PageQueryUtil pageUtil = new PageQueryUtil(params);
+        request.setAttribute("pageResult", newBeeMallGoodsService.getHistoryPage(pageUtil));
+        return "mall/more-history";
+    }
+    
 }
 	

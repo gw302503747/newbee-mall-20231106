@@ -8,7 +8,13 @@
  */
 package ltd.newbee.mall.service;
 
+import ltd.newbee.mall.controller.vo.NewBeeMallGoodsDetailVO;
+import ltd.newbee.mall.controller.vo.NewBeeMallIndexConfigGoodsVO;
+import ltd.newbee.mall.controller.vo.NewBeeMallShoppingCartItemVO;
+import ltd.newbee.mall.controller.vo.NewBeeMallUserVO;
+import ltd.newbee.mall.entity.UserHistory;
 import ltd.newbee.mall.entity.NewBeeMallGoods;
+import ltd.newbee.mall.entity.NewBeeMallShoppingCartItem;
 import ltd.newbee.mall.entity.Question;
 import ltd.newbee.mall.util.PageQueryUtil;
 import ltd.newbee.mall.util.PageResult;
@@ -74,6 +80,15 @@ public interface NewBeeMallGoodsService{
      * @return
      */
     PageResult searchNewBeeMallGoods(PageQueryUtil pageUtil);
- 
 
+    String saveUserHistory(NewBeeMallUserVO user, Long goodsId);
+
+	String updateUserHistory(NewBeeMallUserVO user, Long goodsId);
+	
+	UserHistory getUserHistoryById(Long userId,Long goodsId);
+	
+	PageResult getHistoryPage(PageQueryUtil pageUtil);
+	
+	List<NewBeeMallIndexConfigGoodsVO> getUserHistoryForMoreHistory(NewBeeMallUserVO user);
+	
 }

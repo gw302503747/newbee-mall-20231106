@@ -21,18 +21,23 @@
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="ltd.newbee.mall.entity.NewBeeMallGoods">
         <result column="goods_detail_content" jdbcType="LONGVARCHAR" property="goodsDetailContent"/>
     </resultMap>
-    
+    <resultMap id="UserHistoryMap" type="ltd.newbee.mall.entity.UserHistory">
+		<id column="goods_id" jdbcType="BIGINT" property="goodsId" />
+		<result column="user_id" jdbcType="BIGINT" property="userId"/>
+		<result column="check_time" jdbcType="TIMESTAMP" property="checkTime" />
+	</resultMap>
     <sql id="Base_Column_List">
-    goods_id, goods_name, goods_intro,goods_category_id, goods_cover_img, goods_carousel, original_price,
+    tb_newbee_mall_goods_info.goods_id, goods_name, goods_intro,goods_category_id, goods_cover_img, goods_carousel, original_price,
     selling_price, stock_num, tag, goods_sell_status, create_user, create_time, update_user, 
     update_time
   </sql>
     <sql id="Blob_Column_List">
     goods_detail_content
   </sql>
-   <sql id="Question_Column_List">
-    question_id, answer_id, answer_context
+  <sql id="History_Column_List">
+    tb_newbee_mall_goods_history.user_id, tb_newbee_mall_goods_history.goods_id, tb_newbee_mall_goods_history.check_time
   </sql>
+
 
     <insert id="batchInsert">
         INSERT INTO tb_newbee_mall_goods_info(goods_name, goods_intro, goods_category_id,goods_cover_img,
@@ -392,5 +397,80 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where goods_id = #{goodsId,jdbcType=BIGINT}
   </update>
-  
+   <insert id="insertHistory" useGeneratedKeys="true" keyProperty="userId"
+            parameterType="ltd.newbee.mall.entity.UserHistory">
+        insert into tb_newbee_mall_goods_history 
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="checkTime != null">
+                check_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=BIGINT},
+            </if>
+            <if test="checkTime != null">
+                #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateHistory" parameterType="ltd.newbee.mall.entity.UserHistory">
+        update into tb_newbee_mall_goods_history
+        set check_time=now()
+        where user_id =#{userId,jdbcType=BIGINT}
+        and goods_id =#{goodsId,jdbcType=BIGINT}
+    </update>
+    
+     <select id="selectByUserAndGoodsId" resultMap="UserHistoryMap">
+        select
+        <include refid="History_Column_List"/>
+        from tb_newbee_mall_goods_history
+        where user_id =#{userId,jdbcType=BIGINT}
+        and goods_id =#{goodsId,jdbcType=BIGINT}
+    </select>
+    
+    <select id="getTotalHistory" parameterType="Map" resultType="int">
+        select count(*) from tb_newbee_mall_goods_history
+        <where>
+            <if test="userId!=null and userId!=''">
+                and user_id =#{userId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+    
+        <select id="findUserHistoryByUserId" resultMap="UserHistoryMap">
+        select
+        <include refid="History_Column_List"/>
+        from tb_newbee_mall_goods_history
+        where user_id =#{userId,jdbcType=BIGINT}
+    </select>
+    
+    
+    <select id="findGoodsListByUserHistory" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_goods_info
+        JOIN tb_newbee_mall_goods_history ON tb_newbee_mall_goods_history.goods_id = tb_newbee_mall_goods_info.goods_id
+        <where>
+            <if test="userId!=null and userId!=''">
+                and tb_newbee_mall_goods_history.user_id =#{userId,jdbcType=BIGINT}
+            </if>
+        </where>
+        order by tb_newbee_mall_goods_history.check_time desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    
 </mapper>
