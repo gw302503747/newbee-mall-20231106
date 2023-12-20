@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.SkuMapper">
+    <resultMap id="SkuMap" type="ltd.newbee.mall.entity.Sku">
+        <result column="goods_id" jdbcType="BIGINT" property="goodsId"/>
+        <result column="sku_id" jdbcType="VARCHAR" property="skuId"/>
+        <result column="stock" jdbcType="BIGINT" property="stock"/>
+        <result column="goods_size" jdbcType="VARCHAR" property="goodsSize"/>
+        <result column="goods_color" jdbcType="VARCHAR" property="goodsColor"/>
+    </resultMap>
+     <resultMap id="SkuImageMap" type="ltd.newbee.mall.entity.SkuImage">
+        <result column="goods_id" jdbcType="BIGINT" property="goodsId"/>
+        <result column="sku_id" jdbcType="VARCHAR" property="skuId"/>
+        <result column="sku_image" jdbcType="VARCHAR" property="skuImage"/>
+    </resultMap>
+    <sql id="Sku_Column_List">
+    new_goods_sku.goods_id, new_goods_sku.sku_id, stock, goods_size, goods_color
+  </sql>
+
+   <select id="selectSkuByColumnName" parameterType="Map" resultMap="SkuMap">
+	 SELECT  
+	 <include refid="Sku_Column_List"/>
+ 	 FROM new_goods_sku
+ 	 WHERE new_goods_sku.goods_id =#{goodsId,jdbcType=BIGINT}
+ 	 AND `goods_size` =#{goodsSize,jdbcType=VARCHAR}
+ 	 AND `goods_color` =#{goodsColor,jdbcType=VARCHAR}
+   </select>
+   
+    <select id="selectSkuIdByColumnName" parameterType="Map" resultMap="SkuMap">
+	 SELECT  
+	 new_goods_sku.sku_id
+ 	 FROM new_goods_sku
+ 	 WHERE new_goods_sku.goods_id =#{goodsId,jdbcType=BIGINT}
+ 	 AND `goods_size` =#{goodsSize,jdbcType=VARCHAR}
+ 	 AND `goods_color` =#{goodsColor,jdbcType=VARCHAR}
+   </select>
+   
+   <select id="selectImageBySkuId" parameterType="Map" resultMap="SkuImageMap">
+	 SELECT  
+     new_goods_sku_image.goods_id,new_goods_sku_image.sku_id,sku_image
+ 	 FROM new_goods_sku_image
+ 	 WHERE new_goods_sku_image.goods_id =#{goodsId,jdbcType=BIGINT}
+ 	 AND new_goods_sku_image.sku_id =#{skuId,jdbcType=VARCHAR}
+   </select>
+   
+</mapper>

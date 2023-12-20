@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.QAMapper">
+    <resultMap id="QAMap" type="ltd.newbee.mall.entity.QA">
+        <result column="goods_id" jdbcType="BIGINT" property="goodsId"/>
+        <result column="sku_id" jdbcType="VARCHAR" property="skuId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="question_id" jdbcType="BIGINT" property="questionId"/>
+        <result column="question_content" jdbcType="VARCHAR" property="questionContent"/>
+        <result column="answer_content" jdbcType="VARCHAR" property="answerContent"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/> 
+    </resultMap>
+    <sql id="QA_List">
+    goods_id,sku_id,user_id,question_id, question_content, answer_content,create_time
+  </sql>
+  
+   <insert id="insertQusetion" parameterType="ltd.newbee.mall.entity.QA">
+    insert into new_goods_qa 
+    (goods_id, sku_id, user_id, 
+      question_id, question_content,
+      create_time)
+    values (#{goodsId,jdbcType=BIGINT}, #{skuId,jdbcType=VARCHAR},#{userId,jdbcType=BIGINT},
+    #{questionId,jdbcType=BIGINT},#{questionContent,jdbcType=VARCHAR},
+    #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+   
+</mapper>
