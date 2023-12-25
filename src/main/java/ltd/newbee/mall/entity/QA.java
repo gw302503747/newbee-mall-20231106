@@ -13,6 +13,7 @@ public class QA {
 	private String answerContent;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
+	private long likeCount;
 	
 	
 	public long getGoodsId() {
@@ -57,11 +58,19 @@ public class QA {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
+	public long getLikeCount() {
+		return likeCount;
+	}
+	public void setLikeCount(long likeCount) {
+		this.likeCount = likeCount;
+	}
 	@Override
 	public String toString() {
 		return "QA [goodsId=" + goodsId + ", skuId=" + skuId + ", userId=" + userId + ", questionId=" + questionId
 				+ ", questionContent=" + questionContent + ", answerContent=" + answerContent + ", createTime="
-				+ createTime + "]";
+				+ createTime + ", likeCount=" + likeCount + "]";
 	}
+	
+	
 	
 }

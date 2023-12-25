@@ -9,9 +9,16 @@
         <result column="question_content" jdbcType="VARCHAR" property="questionContent"/>
         <result column="answer_content" jdbcType="VARCHAR" property="answerContent"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/> 
+        <result column="like_count" jdbcType="BIGINT" property="likeCount"/>
     </resultMap>
+     <resultMap id="QALikeMap" type="ltd.newbee.mall.entity.QALike">
+        <result column="question_id" jdbcType="BIGINT" property="questionId"/>
+        <result column="likes" jdbcType="BIGINT" property="likes"/>
+    </resultMap>
+    
+    
     <sql id="QA_List">
-    goods_id,sku_id,user_id,question_id, question_content, answer_content,create_time
+    goods_id,sku_id,user_id,new_goods_qa.question_id, question_content, answer_content,create_time
   </sql>
   
    <insert id="insertQusetion" parameterType="ltd.newbee.mall.entity.QA">
@@ -23,5 +30,86 @@
     #{questionId,jdbcType=BIGINT},#{questionContent,jdbcType=VARCHAR},
     #{createTime,jdbcType=TIMESTAMP})
   </insert>
-   
+  
+  <select id="findQuestionList" parameterType="Map" resultMap="QAMap">
+    SELECT
+      a.goods_id,
+      a.sku_id,
+      a.user_id,
+      a.question_id,
+      a.question_content,
+      a.answer_content,
+      a.create_time,
+      COUNT(b.question_id) AS like_count
+    FROM
+      new_goods_qa a
+    LEFT JOIN
+      new_goods_qa_like b ON a.question_id = b.question_id
+    <where>
+        <if test="goodsId != null">
+            and a.goods_id = #{goodsId}
+        </if>
+        <if test="skuId != null">
+            and a.sku_id = #{skuId}
+        </if>
+    </where>
+    GROUP BY
+      a.goods_id,
+      a.sku_id,
+      a.user_id,
+      a.question_id,
+      a.question_content,
+      a.answer_content,
+      a.create_time
+    <if test="orderBy != null and orderBy != ''">
+        <choose>
+            <when test="orderBy == 'new'">
+                <!-- 按照发布时间倒序排列 -->
+                ORDER BY create_time DESC
+            </when>
+            <otherwise>
+                <!-- 默认按照点赞数量从大到小排列 -->
+                ORDER BY like_count DESC
+            </otherwise>
+        </choose>
+    </if>
+    <if test="start != null and limit != null">
+        LIMIT #{start}, #{limit}
+    </if>
+</select>
+
+    <select id="getTotalQuestions" parameterType="Map" resultType="int">
+        select count(*) from new_goods_qa
+        <where>
+            <if test="goodsId!=null">
+                and goods_id = #{goodsId}
+            </if>
+            <if test="skuId!=null">
+                and sku_id = #{skuId}
+            </if>
+        </where>
+    </select>
+    
+    <select id="getLikesCount" parameterType="java.util.List" resultType="ltd.newbee.mall.entity.QALike">
+    SELECT new_goods_qa_like.question_id, COUNT(*) AS likes
+    FROM new_goods_qa_like
+    WHERE new_goods_qa_like.question_id IN
+    <foreach item="questionId" collection="list" open="(" separator="," close=")">
+        #{questionId,jdbcType=BIGINT}
+    </foreach>
+    GROUP BY new_goods_qa_like.question_id
+</select>
+     
+    <update id="updateAnswer" parameterType="ltd.newbee.mall.entity.QA">
+    update new_goods_qa
+    <set>
+        <trim suffixOverrides=",">
+            <if test="answerContent != null">
+                answer_content = #{answerContent,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </set>
+    where new_goods_qa.question_id = #{questionId,jdbcType=BIGINT}
+</update>
+ 
 </mapper>

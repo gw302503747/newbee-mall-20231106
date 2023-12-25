@@ -6,27 +6,23 @@
  * Copyright (c) 2019-2020 十三 all rights reserved.
  * 版权所有，侵权必究！
  */
-package ltd.newbee.mall.dao;
+package ltd.newbee.mall.service;
 
-import ltd.newbee.mall.entity.NewBeeMallGoods;
+import ltd.newbee.mall.controller.mall.QAController;
+import ltd.newbee.mall.controller.vo.NewBeeMallUserVO;
 import ltd.newbee.mall.entity.QA;
-import ltd.newbee.mall.entity.QALike;
 import ltd.newbee.mall.util.PageQueryUtil;
+import ltd.newbee.mall.util.PageResult;
 
-import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
 
-public interface QAMapper {
+public interface QAService {
 	
-	int insertQusetion(QA qa);
-	
-	List<QA> findQuestionList(PageQueryUtil pageUtil);
-	
-	int getTotalQuestions(PageQueryUtil pageUtil);
-	
-	List<QALike> getLikesCount(List<Long> questionId);
-	
-	int updateAnswer(Object questionId);
+	String saveQuestions(QA qa);
 
+	PageResult getQuestionList(PageQueryUtil pageUtil);
+
+	int updateAnswer(Object questionId);
+	   
 }
