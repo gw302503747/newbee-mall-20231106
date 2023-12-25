@@ -8,22 +8,28 @@
  */
 package ltd.newbee.mall.dao;
 
-import ltd.newbee.mall.entity.NewBeeMallGoods;
 import ltd.newbee.mall.entity.QA;
+import ltd.newbee.mall.entity.Review;
+import ltd.newbee.mall.entity.ReviewImage;
+import ltd.newbee.mall.entity.SkuImage;
 import ltd.newbee.mall.util.PageQueryUtil;
 
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
 
-public interface QAMapper {
+public interface ReviewMapper {
 	
-	int insertQusetion(QA qa);
+	int insertReview(Review review);
 	
-	List<QA> findQuestionList(PageQueryUtil pageUtil);
+	int insertReviewImage(ReviewImage reviewImage);
 	
-	int getTotalQuestions(PageQueryUtil pageUtil);
+	List<Review> findReviewList(PageQueryUtil pageUtil);
 	
-	int updateAnswer(Object questionId);
+	int getTotalReviews(PageQueryUtil pageUtil);
+	
+	List<Long> selectReviewId(@Param("goodsId") Long goodsId, @Param("skuId") String skuId);
+
+	List<String> selectImageByReviewId(Long reviewId);
 
 }

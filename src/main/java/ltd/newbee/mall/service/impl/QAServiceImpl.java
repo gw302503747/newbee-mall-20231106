@@ -26,7 +26,6 @@ import ltd.newbee.mall.dao.QAMapper;
 import ltd.newbee.mall.entity.GoodsCategory;
 import ltd.newbee.mall.entity.NewBeeMallGoods;
 import ltd.newbee.mall.entity.QA;
-import ltd.newbee.mall.entity.QALike;
 import ltd.newbee.mall.entity.UserHistory;
 import ltd.newbee.mall.service.QAService;
 import ltd.newbee.mall.util.BeanUtil;
@@ -55,43 +54,6 @@ public class QAServiceImpl implements QAService {
         List<QA> qaList = qaMapper.findQuestionList(pageUtil);
         int total = qaMapper.getTotalQuestions(pageUtil);
         
-        /*
-        //把实体类中的某个元素提取到一个列表
-        List<Long> questionIdList = qaList.stream()
-                .map(QA::getQuestionId)
-                .collect(Collectors.toList());
-
-        List<QALike> QAlikes= qaMapper.getLikesCount(questionIdList);
-        
-        Map<Long, QA> mapA = new HashMap<>();
-        Map<Long, QALike> mapB = new HashMap<>();
-        
-     //将list内容复制到map里
-        for (QA qa : qaList) {
-            mapA.put(qa.getQuestionId(), qa);
-        }
-
-        for (QALike qaLike : QAlikes) {
-            mapB.put(qaLike.getQuestionId(), qaLike);
-        }
-        
-     // 临时list
-        List<QA> mergedList = new ArrayList<>();
-
-        for (Map.Entry<Long, QA> qas : mapA.entrySet()) {
-            Long questionId = qas.getKey();
-            QA qa = qas.getValue();
-            
-            if (mapB.containsKey(questionId)) {
-            	QALike qaLike = mapB.get(questionId);
-                
-                long mergedValue = qa.getLikes() + qaLike.getLikes();
-                qa.setLikes(mergedValue);
-            }
-
-            mergedList.add(qa);
-        }
-*/
         PageResult pageResult = new PageResult(qaList, total, pageUtil.getLimit(), pageUtil.getPage());
         return pageResult;
     }

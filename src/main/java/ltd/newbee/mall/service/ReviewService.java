@@ -12,18 +12,23 @@ import ltd.newbee.mall.controller.mall.QAController;
 import ltd.newbee.mall.controller.vo.NewBeeMallUserVO;
 import ltd.newbee.mall.entity.QA;
 import ltd.newbee.mall.entity.Review;
+import ltd.newbee.mall.entity.ReviewImage;
 import ltd.newbee.mall.util.PageQueryUtil;
 import ltd.newbee.mall.util.PageResult;
 
 import java.util.List;
 import java.util.Map;
 
-public interface QAService {
+import org.springframework.web.multipart.MultipartFile;
 
-	PageResult getQuestionList(PageQueryUtil pageUtil);
+public interface ReviewService {
 
-	int updateAnswer(Object questionId);
+	String saveReview(Review review);
+	
+	String saveReviewImage(ReviewImage reviewImage);
+	
+	PageResult getReviewList(PageQueryUtil pageUtil);
 
-	String saveQuestions(QA qa);
+	List<ReviewImage> getReviewImage(Long goodsId, String skuId);
 	   
 }
