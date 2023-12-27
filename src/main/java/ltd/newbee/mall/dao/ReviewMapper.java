@@ -11,6 +11,7 @@ package ltd.newbee.mall.dao;
 import ltd.newbee.mall.entity.QA;
 import ltd.newbee.mall.entity.Review;
 import ltd.newbee.mall.entity.ReviewImage;
+import ltd.newbee.mall.entity.Scores;
 import ltd.newbee.mall.entity.SkuImage;
 import ltd.newbee.mall.util.PageQueryUtil;
 
@@ -31,5 +32,9 @@ public interface ReviewMapper {
 	List<Long> selectReviewId(@Param("goodsId") Long goodsId, @Param("skuId") String skuId);
 
 	List<String> selectImageByReviewId(Long reviewId);
+	
+	int selectAverageOfScores(@Param("goodsId") Long goodsId, @Param("skuId") String skuId);
+	
+	Scores getCountOfScores(@Param("goodsId") Long goodsId, @Param("skuId") String skuId);
 
 }

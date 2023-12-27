@@ -19,6 +19,7 @@ public class Review {
 	private String reviewContent;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
+	private long likeCount;
 	private List<String> reviewImages;
 	
 
@@ -83,11 +84,20 @@ public class Review {
 		this.reviewImages = reviewImages;
 	}
 	
+	public long getLikeCount() {
+		return likeCount;
+	}
+	public void setLikeCount(long likeCount) {
+		this.likeCount = likeCount;
+	}
 	@Override
 	public String toString() {
 		return "Review [goodsId=" + goodsId + ", skuId=" + skuId + ", userId=" + userId + ", reviewId=" + reviewId
 				+ ", scores=" + scores + ", nickName=" + nickName + ", reviewTitle=" + reviewTitle + ", reviewContent="
-				+ reviewContent + ", createTime=" + createTime + ", reviewImages=" + reviewImages + "]";
+				+ reviewContent + ", createTime=" + createTime + ", likeCount=" + likeCount + ", reviewImages="
+				+ reviewImages + "]";
 	}
+	
+	
 	
 }

@@ -31,6 +31,7 @@ import ltd.newbee.mall.entity.NewBeeMallGoods;
 import ltd.newbee.mall.entity.QA;
 import ltd.newbee.mall.entity.Review;
 import ltd.newbee.mall.entity.ReviewImage;
+import ltd.newbee.mall.entity.Scores;
 import ltd.newbee.mall.entity.Sku;
 import ltd.newbee.mall.entity.SkuImage;
 import ltd.newbee.mall.entity.UserHistory;
@@ -89,5 +90,10 @@ public class ReviewServiceImpl implements ReviewService {
     	
 		return reviewImages;
     }
-	
+    
+    @Override
+	public Scores getInfoOfScores(Long goodsId,String skuId) {
+    	Scores scores = reviewMapper.getCountOfScores(goodsId, skuId);
+        return scores;
+	}
 }

@@ -13,6 +13,7 @@ import ltd.newbee.mall.controller.vo.NewBeeMallUserVO;
 import ltd.newbee.mall.entity.QA;
 import ltd.newbee.mall.entity.Review;
 import ltd.newbee.mall.entity.ReviewImage;
+import ltd.newbee.mall.entity.Scores;
 import ltd.newbee.mall.util.PageQueryUtil;
 import ltd.newbee.mall.util.PageResult;
 
@@ -30,5 +31,7 @@ public interface ReviewService {
 	PageResult getReviewList(PageQueryUtil pageUtil);
 
 	List<ReviewImage> getReviewImage(Long goodsId, String skuId);
+
+	Scores getInfoOfScores(Long goodsId, String skuId);
 	   
 }

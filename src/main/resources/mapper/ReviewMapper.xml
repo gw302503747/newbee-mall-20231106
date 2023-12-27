@@ -10,12 +10,22 @@
         <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
         <result column="review_title" jdbcType="VARCHAR" property="reviewTitle"/>
         <result column="review_content" jdbcType="VARCHAR" property="reviewContent"/> 
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>   
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/> 
+        <result column="like_count" property="likeCount" />  
     </resultMap>
     <resultMap id="ReviewImageMap" type="ltd.newbee.mall.entity.ReviewImage">
         <result column="goods_id" jdbcType="BIGINT" property="goodsId"/>
         <result column="sku_id" jdbcType="VARCHAR" property="skuId"/>
         <result column="sku_image" jdbcType="VARCHAR" property="skuImage"/>
+    </resultMap>
+    <resultMap id="ScoresMap" type="ltd.newbee.mall.entity.Scores">
+        <result column="average" jdbcType="BIGINT" property="average"/>
+        <result column="total" jdbcType="BIGINT" property="total"/>
+        <result column="score1" jdbcType="BIGINT" property="score1"/>
+        <result column="score2" jdbcType="BIGINT" property="score2"/>
+        <result column="score3" jdbcType="BIGINT" property="score3"/>
+        <result column="score4" jdbcType="BIGINT" property="score4"/>
+        <result column="score5" jdbcType="BIGINT" property="score5"/>
     </resultMap>
     
     <sql id="Review_List">
@@ -61,11 +71,9 @@
       a.review_title,
       a.review_content,
       a.create_time,
-      COUNT(b.review_id) AS like_count
+      (SELECT COUNT(review_id) FROM new_goods_review_like WHERE review_id = a.review_id) AS like_count
     FROM
       new_goods_review a
-    LEFT JOIN
-      new_goods_review_like b ON a.review_id = b.review_id
     <where>
         <if test="goodsId != null">
             and a.goods_id = #{goodsId}
@@ -114,6 +122,20 @@
     FROM new_goods_review_image
     WHERE review_id = #{reviewId,jdbcType=BIGINT}
     </select>
+    
+    <select id="getCountOfScores" parameterType="Map" resultMap="ScoresMap">
+    SELECT
+        ROUND(AVG(scores),1) AS average,
+        COUNT(scores) AS total,
+        COUNT(CASE WHEN scores = 1 THEN 1 ELSE NULL END) AS score1,
+        COUNT(CASE WHEN scores = 2 THEN 1 ELSE NULL END) AS score2,
+        COUNT(CASE WHEN scores = 3 THEN 1 ELSE NULL END) AS score3,
+        COUNT(CASE WHEN scores = 4 THEN 1 ELSE NULL END) AS score4,
+        COUNT(CASE WHEN scores = 5 THEN 1 ELSE NULL END) AS score5
+    FROM new_goods_review
+    WHERE new_goods_review.goods_id = #{goodsId,jdbcType=BIGINT}
+    AND new_goods_review.sku_id = #{skuId,jdbcType=VARCHAR}
+</select>
 
- 
+    
 </mapper>

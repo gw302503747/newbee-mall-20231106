@@ -9,10 +9,14 @@
 package ltd.newbee.mall.controller.mall;
 
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -43,6 +47,7 @@ import ltd.newbee.mall.entity.NewBeeMallGoods;
 import ltd.newbee.mall.entity.QA;
 import ltd.newbee.mall.entity.Review;
 import ltd.newbee.mall.entity.ReviewImage;
+import ltd.newbee.mall.entity.Scores;
 import ltd.newbee.mall.entity.SkuImage;
 import ltd.newbee.mall.service.QAService;
 import ltd.newbee.mall.service.ReviewService;
@@ -60,7 +65,7 @@ public class ReviewController {
     
     @RequestMapping(value = "/review/save", method = RequestMethod.POST,consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @ResponseBody
-    public ResponseEntity<Object> saveImage(@RequestParam("goodsId") Long goodsId,
+    public Result save(@RequestParam("goodsId") Long goodsId,
             @RequestParam("skuId") String skuId,
             @RequestParam("userId") Long userId,
             @RequestParam("reviewId") Long reviewId,
@@ -73,17 +78,33 @@ public class ReviewController {
     	// 保存 Image 对象到 image 表
         ReviewImage reviewImage = new ReviewImage();
     	
+        int i = 0;
     	    // 处理每个图片
         for (MultipartFile image : images) {
         	
             // 处理文件上传逻辑，保存文件等
-            String imagePath = "/Users/wengao/Desktop/newbee-mall-20231106/src/main/resources/upload/" + image.getOriginalFilename();
+            String fileName = image.getOriginalFilename();
+            String suffixName = fileName.substring(fileName.lastIndexOf("."));
+            //生成文件名称通用方法
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            Random r = new Random();
+            StringBuilder tempName = new StringBuilder();
+            tempName.append(sdf.format(new Date())).append(r.nextInt(100)).append(suffixName);
+            String newFileName = tempName.toString();
+            String imagePath = "/Users/wengao/Desktop/newbee-mall-20231106/src/main/resources/upload/" + newFileName;
+            
+            //保存文件
             reviewImage.setReviewImage(imagePath);
             reviewImage.setGoodsId(goodsId);
             reviewImage.setSkuId(skuId);
             reviewImage.setUserId(userId);
             reviewImage.setReviewId(reviewId);
             reviewService.saveReviewImage(reviewImage);
+            
+            i++;
+            if(i>5) {
+            	return ResultGenerator.genFailResult("最多上传5张图片");
+            }
         }
         
         Review review = new Review();
@@ -97,7 +118,7 @@ public class ReviewController {
         review.setReviewContent(reviewContent);
         reviewService.saveReview(review);
 
-    	return ResponseEntity.ok().build();
+    	return ResultGenerator.genSuccessResult("评论上传成功");
     }
     
     @RequestMapping(value = "/review/list", method = RequestMethod.GET)
@@ -139,6 +160,18 @@ public class ReviewController {
         }
         
         return ResultGenerator.genSuccessResult(pageResult);
+    }
+    
+
+    @RequestMapping(value = "/review/scores", method = RequestMethod.GET)
+    @ResponseBody
+    public Result scores(@RequestParam Map<String, Object> params) {
+    	
+    	Long goodsId = Long.valueOf(params.get("goodsId").toString());
+        String skuId = params.get("skuId").toString();
+    	Scores scores = reviewService.getInfoOfScores(goodsId,skuId);
+    	
+    	return ResultGenerator.genSuccessResult(scores);
     }
     
 }
